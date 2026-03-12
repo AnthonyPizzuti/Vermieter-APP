@@ -1,0 +1,64 @@
+.dashboard-container {
+  padding: 20px;
+  text-align: center;
+
+  header {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    margin-bottom: 40px;
+    width: 100%;
+
+img {
+     height: 150px; 
+      width: auto; 
+      display: block;
+    }
+  }
+
+  .haus-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 20px;
+    justify-items: center;
+    margin-bottom: 40px;
+
+    .haus-card {
+      cursor: pointer;
+      width: 150px;
+      transition: transform 0.2s;
+
+      &:hover { transform: scale(1.05); }
+
+      .img-placeholder {
+        border: 2px solid black;
+        border-radius: 15px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: white;
+
+        img { 
+          width: 100%; 
+          height: 100%; 
+          object-fit: cover;
+        }
+        .format-label { font-size: 2rem; font-weight: bold; }
+      }
+
+      .strasse { margin-top: 8px; font-weight: 500; }
+    }
+  }
+
+  .admin-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 40px;
+    
+    button { font-size: 0.8rem; }
+  }
+}

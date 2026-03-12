@@ -1,0 +1,99 @@
+<div class="detail-container" *ngIf="haus">
+  <header class="main-header">
+    <h1>{{ haus.titel | uppercase }}</h1>
+    <button mat-raised-button color="primary" (click)="openMieterDialog()">
+      Neuer Mieter +
+    </button>
+  </header>
+
+  <div class="content-wrapper">
+    <div class="image-section">
+      <div class="img-card">
+        <img [src]="haus.bildUrl" alt="Haus">
+      </div>
+      <h2 class="strasse-label">{{ haus.strasse }}</h2>
+    </div>
+
+    <div class="list-section">
+      <div class="table-card">
+        <div class="table-header-row">
+          <h3>Mieter Liste</h3>
+          
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Mieter suchen...</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="z.B. Müller" #input>
+          </mat-form-field>
+        </div>
+
+        <p class="stats-badge">{{ bezahltCounter }}</p>
+        
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+          
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let m"> {{m.name}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="stockwerk">
+            <th mat-header-cell *matHeaderCellDef> Stock </th>
+            <td mat-cell *matCellDef="let m"> {{m.stockwerk}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="zimmer">
+            <th mat-header-cell *matHeaderCellDef> Zimmer </th>
+            <td mat-cell *matCellDef="let m"> {{m.zimmer}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="kaltmiete">
+            <th mat-header-cell *matHeaderCellDef> Kalt </th>
+            <td mat-cell *matCellDef="let m"> {{m.kaltmiete}}€ </td>
+          </ng-container>
+
+          <ng-container matColumnDef="nebenkosten">
+            <th mat-header-cell *matHeaderCellDef> NK </th>
+            <td mat-cell *matCellDef="let m"> {{m.nebenkosten}}€ </td>
+          </ng-container>
+
+          <ng-container matColumnDef="gesamtmiete">
+            <th mat-header-cell *matHeaderCellDef> Gesamt </th>
+            <td mat-cell *matCellDef="let m" style="font-weight: bold;"> {{m.gesamtmiete}}€ </td>
+          </ng-container>
+
+          <ng-container matColumnDef="kaution">
+            <th mat-header-cell *matHeaderCellDef> Kaution </th>
+            <td mat-cell *matCellDef="let m"> {{m.kaution}}€ </td>
+          </ng-container>
+
+          <ng-container matColumnDef="bezahlt">
+            <th mat-header-cell *matHeaderCellDef> Status ({{aktuellerMonat}}) </th>
+            <td mat-cell *matCellDef="let m" [ngClass]="{'status-bezahlt': m.istBezahlt?.[aktuellerMonat], 'status-offen': !m.istBezahlt?.[aktuellerMonat]}">
+              <div class="status-wrapper">
+                <mat-checkbox 
+                  [checked]="m.istBezahlt?.[aktuellerMonat]" 
+                  (change)="toggleBezahlt(m)">
+                  <span class="status-text">{{ m.istBezahlt?.[aktuellerMonat] ? 'Gezahlt' : 'Offen' }}</span>
+                </mat-checkbox>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="aktionen">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let m">
+              <button mat-button color="warn" (click)="deleteMieter(m.id)">Löschen</button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <div *ngIf="dataSource.filteredData.length === 0" class="no-data">
+          Kein Mieter mit dem Namen "{{input.value}}" gefunden.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button mat-button routerLink="/" class="back-link">← Zurück zur Übersicht</button>
+</div>

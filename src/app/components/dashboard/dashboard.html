@@ -1,0 +1,23 @@
+<div class="dashboard-container">
+<header>
+    <img src="janjichausverwaltung.png" alt="Janjic Hausverwaltung">
+  </header>
+
+  <div class="haus-grid">
+    <div *ngFor="let haus of haeuser" 
+         class="haus-card" 
+         [routerLink]="['/haus', haus.id]">
+      <div class="img-placeholder">
+        <img [src]="haus.bildUrl" alt="Haus Bild" *ngIf="haus.bildUrl">
+        <span class="format-label" *ngIf="!haus.bildUrl">PNG</span>
+      </div>
+      <p class="strasse">{{ haus.strasse }}</p>
+    </div>
+  </div>
+
+  <div class="admin-actions">
+    <button mat-stroked-button (click)="exportiere()">Backup Download (JSON)</button>
+    <input type="file" #fileInput style="display: none" (change)="importiere($event)">
+    <button mat-stroked-button (click)="fileInput.click()">Daten Wiederherstellen</button>
+  </div>
+</div>
