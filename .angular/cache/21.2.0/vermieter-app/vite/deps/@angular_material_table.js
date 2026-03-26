@@ -1,4 +1,7 @@
 import {
+  _DisposeViewRepeaterStrategy
+} from "./chunk-PCU2PRKL.js";
+import {
   CDK_VIRTUAL_SCROLL_VIEWPORT,
   DataSource,
   ScrollingModule,
@@ -6,17 +9,18 @@ import {
   _RecycleViewRepeaterStrategy,
   _ViewRepeaterOperation,
   isDataSource
-} from "./chunk-YYTBGYLG.js";
-import "./chunk-T7O4FK2W.js";
+} from "./chunk-6QMO6MGR.js";
+import "./chunk-AIEYJCOW.js";
+import "./chunk-GUGIMSVJ.js";
 import {
   BidiModule,
   Directionality
-} from "./chunk-TCD5FVKV.js";
+} from "./chunk-C3FHG3QJ.js";
 import {
   Platform,
   _isNumberValue
-} from "./chunk-AYUAIGIC.js";
-import "./chunk-UZIV6XHZ.js";
+} from "./chunk-WQVV5VOU.js";
+import "./chunk-TJVSXXEF.js";
 import {
   BehaviorSubject,
   ChangeDetectionStrategy,
@@ -29,7 +33,6 @@ import {
   ElementRef,
   EventEmitter,
   HostAttributeToken,
-  Injectable,
   InjectionToken,
   Injector,
   Input,
@@ -64,7 +67,6 @@ import {
   ɵɵcontentQuery,
   ɵɵdefineComponent,
   ɵɵdefineDirective,
-  ɵɵdefineInjectable,
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵelementContainer,
@@ -83,39 +85,7 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate1,
   ɵɵviewQuery
-} from "./chunk-S3PKON3U.js";
-import "./chunk-H2SRQSE4.js";
-
-// node_modules/@angular/cdk/fesm2022/_dispose-view-repeater-strategy-chunk.mjs
-var _DisposeViewRepeaterStrategy = class {
-  applyChanges(changes, viewContainerRef, itemContextFactory, itemValueResolver, itemViewChanged) {
-    changes.forEachOperation((record, adjustedPreviousIndex, currentIndex) => {
-      let view;
-      let operation;
-      if (record.previousIndex == null) {
-        const insertContext = itemContextFactory(record, adjustedPreviousIndex, currentIndex);
-        view = viewContainerRef.createEmbeddedView(insertContext.templateRef, insertContext.context, insertContext.index);
-        operation = _ViewRepeaterOperation.INSERTED;
-      } else if (currentIndex == null) {
-        viewContainerRef.remove(adjustedPreviousIndex);
-        operation = _ViewRepeaterOperation.REMOVED;
-      } else {
-        view = viewContainerRef.get(adjustedPreviousIndex);
-        viewContainerRef.move(view, currentIndex);
-        operation = _ViewRepeaterOperation.MOVED;
-      }
-      if (itemViewChanged) {
-        itemViewChanged({
-          context: view?.context,
-          operation,
-          record
-        });
-      }
-    });
-  }
-  detach() {
-  }
-};
+} from "./chunk-J4XFQGRD.js";
 
 // node_modules/@angular/cdk/fesm2022/table.mjs
 var _c0 = [[["caption"]], [["colgroup"], ["col"]], "*"];
@@ -2332,43 +2302,6 @@ var CdkTableModule = class _CdkTableModule {
     args: [{
       exports: EXPORTED_DECLARATIONS,
       imports: [ScrollingModule, ...EXPORTED_DECLARATIONS]
-    }]
-  }], null, null);
-})();
-
-// node_modules/@angular/cdk/fesm2022/_unique-selection-dispatcher-chunk.mjs
-var UniqueSelectionDispatcher = class _UniqueSelectionDispatcher {
-  _listeners = [];
-  notify(id, name) {
-    for (let listener of this._listeners) {
-      listener(id, name);
-    }
-  }
-  listen(listener) {
-    this._listeners.push(listener);
-    return () => {
-      this._listeners = this._listeners.filter((registered) => {
-        return listener !== registered;
-      });
-    };
-  }
-  ngOnDestroy() {
-    this._listeners = [];
-  }
-  static ɵfac = function UniqueSelectionDispatcher_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _UniqueSelectionDispatcher)();
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: _UniqueSelectionDispatcher,
-    factory: _UniqueSelectionDispatcher.ɵfac,
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(UniqueSelectionDispatcher, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
     }]
   }], null, null);
 })();

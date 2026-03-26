@@ -1,16 +1,35 @@
-<h2 mat-dialog-title>Mieter wirklich löschen?</h2>
+<h2 mat-dialog-title>
+  {{ data.mode === 'edit' ? 'Bearbeiten freischalten' : 'Mieter wirklich löschen?' }}
+</h2>
+
 <mat-dialog-content>
-  <p>Diese Aktion kann nicht rückgängig gemacht werden. Bitte geben Sie das Administrator-Passwort ein:</p>
+  <p>
+    {{ data.mode === 'edit' 
+        ? 'Bitte geben Sie das Administrator-Passwort ein, um Änderungen vorzunehmen:' 
+        : 'Diese Aktion kann nicht rückgängig gemacht werden. Bitte geben Sie das Administrator-Passwort ein:' 
+    }}
+  </p>
   
-  <mat-form-field appearance="outline" class="full-width">
+  <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
     <mat-label>Passwort</mat-label>
-    <input matInput type="password" [(ngModel)]="password" placeholder="Passwort eingeben">
+    <input matInput 
+           type="password" 
+           [(ngModel)]="inputPassword" 
+           (keyup.enter)="check()" 
+           placeholder="Passwort eingeben">
   </mat-form-field>
   
-  <p *ngIf="error" style="color: red; font-size: 0.8rem;">Falsches Passwort!</p>
+  <p *ngIf="showError" style="color: #f44336; font-size: 0.8rem; margin-top: 5px;">
+    Falsches Passwort! Zugriff verweigert.
+  </p>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Abbrechen</button>
-  <button mat-raised-button color="warn" (click)="onConfirm()">Unwiderruflich Löschen</button>
+  <button mat-button (click)="dialogRef.close(false)">Abbrechen</button>
+  
+  <button mat-raised-button 
+          [color]="data.mode === 'edit' ? 'primary' : 'warn'" 
+          (click)="check()">
+    {{ data.mode === 'edit' ? 'Freischalten' : 'Unwiderruflich Löschen' }}
+  </button>
 </mat-dialog-actions>

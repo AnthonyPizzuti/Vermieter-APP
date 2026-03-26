@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select'; 
+import { MatOptionModule } from '@angular/material/core';
 import { DataService } from '../../services/data';
 import { Haus, Mieter } from '../../models/immobilie.model';
 import { MieterDialog } from './../mieter-dialog/mieter-dialog';
@@ -27,7 +29,9 @@ import { DeleteConfirm } from '../delete-confirm/delete-confirm';
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectModule,
+    MatOptionModule
   ],
   templateUrl: './haus-detail.html',
   styleUrl: './haus-detail.scss',
@@ -53,7 +57,8 @@ export class HausDetail implements OnInit {
     'aktionen'
   ];
   
-  aktuellerMonat = new Date().getMonth() + 1 + '-' + new Date().getFullYear();
+  aktuellerMonat = ''; 
+  verfuegbareMonate: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -62,6 +67,11 @@ export class HausDetail implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.generiereMonatsListe();
+
+    const heute = new Date();
+    this.aktuellerMonat = (heute.getMonth() + 1) + '-' + heute.getFullYear();
+
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.haus = this.dataService.getHausById(id);
     
@@ -75,6 +85,19 @@ export class HausDetail implements OnInit {
     }
   }
 
+  generiereMonatsListe() {
+    const heute = new Date();
+    for (let i = -6; i <= 6; i++) {
+      const d = new Date(heute.getFullYear(), heute.getMonth() + i, 1);
+      const monatJahr = (d.getMonth() + 1) + '-' + d.getFullYear();
+      this.verfuegbareMonate.push(monatJahr);
+    }
+  }
+
+  onMonatChange(neuerMonat: string) {
+    this.aktuellerMonat = neuerMonat;
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -82,7 +105,8 @@ export class HausDetail implements OnInit {
 
   openMieterDialog() {
     const dialogRef = this.dialog.open(MieterDialog, {
-      width: '500px'
+      width: '500px',
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -110,18 +134,30 @@ export class HausDetail implements OnInit {
   }
 
   editMieter(mieter: Mieter) {
-    const dialogRef = this.dialog.open(MieterDialog, {
-      width: '500px',
-      data: { ...mieter }
+    const passwordDialogRef = this.dialog.open(DeleteConfirm, {
+      width: '350px',
+      disableClose: true,
+      data: { mode: 'edit' }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && this.haus) {
-        const index = this.haus.mieter.findIndex(m => m.id === mieter.id);
-        if (index !== -1) {
-          this.haus.mieter[index] = { ...result, id: mieter.id };
-          this.updateTable();
-        }
+    passwordDialogRef.afterClosed().subscribe(isPasswordCorrect => {
+      if (isPasswordCorrect) {
+        const editDialogRef = this.dialog.open(MieterDialog, {
+          width: '500px',
+          data: { ...mieter }
+        });
+
+        editDialogRef.afterClosed().subscribe(result => {
+          if (result && this.haus) {
+            const index = this.haus.mieter.findIndex(m => m.id === mieter.id);
+            if (index !== -1) {
+              this.haus.mieter[index] = { ...result, id: mieter.id };
+              this.updateTable();
+            }
+          }
+        });
+      } else {
+        console.log('Bearbeiten abgebrochen: Passwort falsch oder Dialog geschlossen.');
       }
     });
   }
@@ -129,7 +165,8 @@ export class HausDetail implements OnInit {
   deleteMieter(mieterId: number) {
     const dialogRef = this.dialog.open(DeleteConfirm, {
       width: '350px',
-      disableClose: true
+      disableClose: true,
+      data: { mode: 'delete' }
     });
 
     dialogRef.afterClosed().subscribe(confirmed => {
@@ -149,12 +186,7 @@ export class HausDetail implements OnInit {
 
   private saveChanges() {
     if (this.haus) {
-      const alleHaeuser = this.dataService.getHaeuser();
-      const index = alleHaeuser.findIndex(h => h.id === this.haus?.id);
-      if (index !== -1) {
-        alleHaeuser[index] = this.haus;
-        this.dataService.saveHaeuser(alleHaeuser);
-      }
+      this.dataService.updateHaus(this.haus);
     }
   }
 
@@ -164,6 +196,10 @@ export class HausDetail implements OnInit {
     const gezahlt = aktuelleListe.filter(m => m.istBezahlt?.[this.aktuellerMonat]).length;
     const gesamt = aktuelleListe.length;
     
-    return `${gezahlt} von ${gesamt} Mieten erhalten`;
+    return `${gezahlt} von ${gesamt} Mieten erhalten (${this.aktuellerMonat})`;
+  }
+
+  drucken() {
+    window.print();
   }
 }

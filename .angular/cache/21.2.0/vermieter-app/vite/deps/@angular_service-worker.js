@@ -9,6 +9,7 @@ import {
   Observable,
   RuntimeError,
   Subject,
+  __spreadValues,
   filter,
   formatRuntimeError,
   inject,
@@ -22,10 +23,7 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-S3PKON3U.js";
-import {
-  __spreadValues
-} from "./chunk-H2SRQSE4.js";
+} from "./chunk-J4XFQGRD.js";
 
 // node_modules/@angular/service-worker/fesm2022/service-worker.mjs
 var ERR_SW_NOT_SUPPORTED = "Service workers are disabled or not supported by this browser";
