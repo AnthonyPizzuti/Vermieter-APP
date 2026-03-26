@@ -1,6 +1,20 @@
 <div class="dashboard-container">
-<header>
-    <img src="janjichausverwaltung.png" alt="Janjic Hausverwaltung">
+<header class="welcome-header">
+    <div class="greeting-text prefix">
+      <span *ngFor="let char of begruessungPrefix.split(''); let i = index" 
+            [style.animation-delay]="(i * 50) + 'ms'">
+        {{ char }}
+      </span>
+    </div>
+
+    <img src="janjichausverwaltung.png" alt="Janjic Hausverwaltung" class="header-logo">
+
+    <div class="greeting-text suffix">
+      <span *ngFor="let char of begruessungSuffix.split(''); let i = index" 
+            [style.animation-delay]="(begruessungPrefix.length * 50 + i * 50) + 'ms'">
+        {{ char }}
+      </span>
+    </div>
   </header>
 
   <div class="haus-grid">

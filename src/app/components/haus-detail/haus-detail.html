@@ -12,7 +12,11 @@
         <img [src]="haus.bildUrl" alt="Haus">
       </div>
       <h2 class="strasse-label">{{ haus.strasse }}</h2>
+
+      <button mat-button routerLink="/" class="back-link">← Zurück zur Übersicht</button>
     </div>
+
+    
 
     <div class="list-section">
       <div class="table-card">
@@ -29,6 +33,11 @@
         
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
           
+          <ng-container matColumnDef="wohnungsNummer">
+            <th mat-header-cell *matHeaderCellDef> Wohn.-Nr. </th>
+            <td mat-cell *matCellDef="let m"> {{m.wohnungsNummer}} </td>
+          </ng-container>
+
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
             <td mat-cell *matCellDef="let m"> {{m.name}} </td>
@@ -39,10 +48,15 @@
             <td mat-cell *matCellDef="let m"> {{m.stockwerk}} </td>
           </ng-container>
 
-          <ng-container matColumnDef="zimmer">
-            <th mat-header-cell *matHeaderCellDef> Zimmer </th>
-            <td mat-cell *matCellDef="let m"> {{m.zimmer}} </td>
-          </ng-container>
+         <ng-container matColumnDef="zimmer">
+  <th mat-header-cell *matHeaderCellDef> Zimmer/Lage </th>
+  <td mat-cell *matCellDef="let m"> {{m.zimmer}} </td>
+</ng-container>
+
+<ng-container matColumnDef="flaeche">
+  <th mat-header-cell *matHeaderCellDef> Fläche </th>
+  <td mat-cell *matCellDef="let m"> {{ m.flaeche }} m² </td>
+</ng-container>
 
           <ng-container matColumnDef="kaltmiete">
             <th mat-header-cell *matHeaderCellDef> Kalt </th>
@@ -54,6 +68,11 @@
             <td mat-cell *matCellDef="let m"> {{m.nebenkosten}}€ </td>
           </ng-container>
 
+          <ng-container matColumnDef="mwst">
+  <th mat-header-cell *matHeaderCellDef> MwSt. </th>
+  <td mat-cell *matCellDef="let m"> {{ m.mwst ? (m.mwst | number:'1.2-2') + '€' : '0,00€' }} </td>
+</ng-container>
+
           <ng-container matColumnDef="gesamtmiete">
             <th mat-header-cell *matHeaderCellDef> Gesamt </th>
             <td mat-cell *matCellDef="let m" style="font-weight: bold;"> {{m.gesamtmiete}}€ </td>
@@ -63,6 +82,27 @@
             <th mat-header-cell *matHeaderCellDef> Kaution </th>
             <td mat-cell *matCellDef="let m"> {{m.kaution}}€ </td>
           </ng-container>
+
+          <ng-container matColumnDef="steuerId">
+  <th mat-header-cell *matHeaderCellDef> Steuer-ID </th>
+  <td mat-cell *matCellDef="let m"> 
+    <span style="font-size: 0.8rem; color: #666;">{{m.steuerId || '-'}}</span> 
+  </td>
+</ng-container>
+
+<ng-container matColumnDef="sonstige">
+  <th mat-header-cell *matHeaderCellDef> Sonstige </th>
+  <td mat-cell *matCellDef="let m"> 
+    <span style="font-style: italic; color: #666;">{{ m.sonstige || '-' }}</span>
+  </td>
+</ng-container>
+
+<ng-container matColumnDef="mietbeginn">
+  <th mat-header-cell *matHeaderCellDef> Mietbeginn </th>
+  <td mat-cell *matCellDef="let m"> 
+    {{ m.mietbeginn ? (m.mietbeginn | date:'dd.MM.yyyy') : '-' }} 
+  </td>
+</ng-container>
 
           <ng-container matColumnDef="bezahlt">
             <th mat-header-cell *matHeaderCellDef> Status ({{aktuellerMonat}}) </th>
@@ -77,12 +117,18 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="aktionen">
-            <th mat-header-cell *matHeaderCellDef> </th>
-            <td mat-cell *matCellDef="let m">
-              <button mat-button color="warn" (click)="deleteMieter(m.id)">Löschen</button>
-            </td>
-          </ng-container>
+<ng-container matColumnDef="aktionen">
+  <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+  <td mat-cell *matCellDef="let m">
+    <button mat-icon-button color="primary" (click)="editMieter(m)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    
+    <button mat-icon-button color="warn" (click)="deleteMieter(m.id)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </td>
+</ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -94,6 +140,4 @@
       </div>
     </div>
   </div>
-
-  <button mat-button routerLink="/" class="back-link">← Zurück zur Übersicht</button>
 </div>

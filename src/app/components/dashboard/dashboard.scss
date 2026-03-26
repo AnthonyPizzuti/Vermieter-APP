@@ -1,64 +1,85 @@
 .dashboard-container {
   padding: 20px;
   text-align: center;
+  overflow-x: hidden;
 
-  header {
+  .welcome-header {
     display: flex;
     justify-content: center; 
     align-items: center;
-    margin-bottom: 40px;
+    gap: 40px; 
+    margin-bottom: 60px;
+    margin-top: 30px;
     width: 100%;
+    perspective: 1000px; 
 
-img {
-     height: 150px; 
-      width: auto; 
+    .header-logo {
+      height: 140px; 
+      width: auto;
       display: block;
+      animation: fadeInLogo 1.2s ease-out forwards;
+      opacity: 0;
+    }
+
+.greeting-text {
+      font-size: 3.5rem; 
+      font-weight: 800;
+      color: #333;
+      display: flex;
+      
+      span {
+        display: inline-block;
+        transform-origin: bottom center;
+        opacity: 0;
+        animation: rotateInLetter 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      }
     }
   }
 
   .haus-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); 
-    gap: 20px;
-    justify-items: center;
-    margin-bottom: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto 50px auto;
 
     .haus-card {
       cursor: pointer;
-      width: 150px;
-      transition: transform 0.2s;
-
-      &:hover { transform: scale(1.05); }
+      transition: transform 0.3s ease;
+      &:hover { transform: translateY(-10px); }
 
       .img-placeholder {
-        border: 2px solid black;
-        border-radius: 15px;
-        height: 200px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        border: 2px solid #000;
+        border-radius: 20px;
+        height: 220px;
+        background-color: #fff;
         overflow: hidden;
-        background-color: white;
-
-        img { 
-          width: 100%; 
-          height: 100%; 
-          object-fit: cover;
-        }
-        .format-label { font-size: 2rem; font-weight: bold; }
+        img { width: 100%; height: 100%; object-fit: cover; }
       }
-
-      .strasse { margin-top: 8px; font-weight: 500; }
+      .strasse { margin-top: 12px; font-weight: 600; font-size: 1.1rem; }
     }
   }
 
   .admin-actions {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 40px;
-    
-    button { font-size: 0.8rem; }
+    gap: 15px;
+    margin-top: 50px;
   }
+}
+
+@keyframes rotateInLetter {
+  0% {
+    opacity: 0;
+    transform: translateY(60px) rotateX(-110deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+
+@keyframes fadeInLogo {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
 }

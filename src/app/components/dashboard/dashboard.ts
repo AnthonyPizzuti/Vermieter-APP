@@ -15,10 +15,32 @@ import { MatButtonModule } from '@angular/material/button';
 export class Dashboard implements OnInit {
   haeuser: Haus[] = [];
 
+  begruessungPrefix = '';
+  begruessungSuffix = '';
+
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.haeuser = this.dataService.getHaeuser();
+    this.berechneTageszeit();
+  }
+
+  private berechneTageszeit() {
+    const stunde = new Date().getHours();
+
+    if (stunde >= 5 && stunde < 11) {
+      // 5:00 - 10:59: Dobro jutro
+      this.begruessungPrefix = 'Dobro';
+      this.begruessungSuffix = 'jutro';
+    } else if (stunde >= 11 && stunde < 18) {
+      // 11:00 - 17:59: Dobar dan
+      this.begruessungPrefix = 'Dobar';
+      this.begruessungSuffix = 'dan';
+    } else {
+      // 18:00 - 4:59: Dobro veče
+      this.begruessungPrefix = 'Dobro';
+      this.begruessungSuffix = 'veče';
+    }
   }
 
   exportiere() {

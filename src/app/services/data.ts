@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Haus } from '../models/immobilie.model';
+import { Haus, Mieter } from '../models/immobilie.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,15 @@ export class DataService {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(haeuser));
   }
 
+  updateHaus(aktualisiertesHaus: Haus): void {
+    const alleHaeuser = this.getHaeuser();
+    const index = alleHaeuser.findIndex(h => h.id === aktualisiertesHaus.id);
+    if (index !== -1) {
+      alleHaeuser[index] = aktualisiertesHaus;
+      this.saveHaeuser(alleHaeuser);
+    }
+  }
+
   getHausById(id: number): Haus | undefined {
     return this.getHaeuser().find(h => h.id === id);
   }
@@ -53,7 +62,23 @@ export class DataService {
       reader.onload = (e) => {
         try {
           const json = JSON.parse(e.target?.result as string);
-          this.saveHaeuser(json);
+          
+          const migrierteDaten = json.map((haus: any) => ({
+            ...haus,
+            mieter: (haus.mieter || []).map((m: any) => ({
+              ...m,
+              wohnungsNummer: m.wohnungsNummer || 'Unbekannt',
+              flaeche: m.flaeche || 0,
+              zimmer: m.zimmer || '1',
+              mwst: m.mwst || 0,
+              sonstige: m.sonstige || '',
+              mietbeginn: m.mietbeginn || '',
+              steuerId: m.steuerId || '',
+              istBezahlt: m.istBezahlt || {}
+            }))
+          }));
+
+          this.saveHaeuser(migrierteDaten);
           resolve();
         } catch (err) {
           reject('Ungültige JSON-Datei');

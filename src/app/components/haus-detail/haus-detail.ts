@@ -7,6 +7,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DataService } from '../../services/data';
 import { Haus, Mieter } from '../../models/immobilie.model';
 import { MieterDialog } from './../mieter-dialog/mieter-dialog';
@@ -23,7 +25,9 @@ import { DeleteConfirm } from '../delete-confirm/delete-confirm';
     MatCheckboxModule, 
     MatDialogModule, 
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   templateUrl: './haus-detail.html',
   styleUrl: './haus-detail.scss',
@@ -32,13 +36,19 @@ export class HausDetail implements OnInit {
   haus?: Haus;
   dataSource = new MatTableDataSource<Mieter>([]);
   displayedColumns: string[] = [
-    'name', 
+    'wohnungsNummer',
+    'name',
+    'steuerId',
     'stockwerk', 
     'zimmer', 
+    'flaeche',
     'kaltmiete', 
-    'nebenkosten', 
+    'nebenkosten',
+    'mwst', 
     'gesamtmiete', 
-    'kaution', 
+    'kaution',
+    'sonstige',
+    'mietbeginn',
     'bezahlt', 
     'aktionen'
   ];
@@ -59,7 +69,8 @@ export class HausDetail implements OnInit {
       this.dataSource.data = this.haus.mieter;
       
       this.dataSource.filterPredicate = (data: Mieter, filter: string) => {
-        return data.name.toLowerCase().includes(filter.toLowerCase());
+        return data.name.toLowerCase().includes(filter.toLowerCase()) || 
+               data.wohnungsNummer.toLowerCase().includes(filter.toLowerCase());
       };
     }
   }
@@ -71,7 +82,7 @@ export class HausDetail implements OnInit {
 
   openMieterDialog() {
     const dialogRef = this.dialog.open(MieterDialog, {
-      width: '400px'
+      width: '500px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -96,6 +107,23 @@ export class HausDetail implements OnInit {
     if (!mieter.istBezahlt) mieter.istBezahlt = {};
     mieter.istBezahlt[this.aktuellerMonat] = !mieter.istBezahlt[this.aktuellerMonat];
     this.saveChanges();
+  }
+
+  editMieter(mieter: Mieter) {
+    const dialogRef = this.dialog.open(MieterDialog, {
+      width: '500px',
+      data: { ...mieter }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && this.haus) {
+        const index = this.haus.mieter.findIndex(m => m.id === mieter.id);
+        if (index !== -1) {
+          this.haus.mieter[index] = { ...result, id: mieter.id };
+          this.updateTable();
+        }
+      }
+    });
   }
 
   deleteMieter(mieterId: number) {

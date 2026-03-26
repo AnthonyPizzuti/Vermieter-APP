@@ -1,68 +1,94 @@
-<h2 mat-dialog-title>Neuen Mieter anlegen</h2>
-<mat-dialog-content [formGroup]="mieterForm" class="dialog-content-fix">
-  
-  <div style="padding-top: 15px; display: flex; flex-direction: column; gap: 5px;">
-    
-    <mat-form-field appearance="outline">
-      <mat-label>Name des Mieters</mat-label>
-      <input matInput formControlName="name" placeholder="z.B. Max Mustermann">
-      <mat-error *ngIf="mieterForm.get('name')?.hasError('required')">
-        Der Name ist <strong>erforderlich</strong>.
-      </mat-error>
-    </mat-form-field>
+<h2 mat-dialog-title>{{ data ? 'Mieter bearbeiten' : 'Neuen Mieter anlegen' }}</h2>
 
-    <div style="display: flex; gap: 10px;">
-      <mat-form-field appearance="outline" style="flex: 1;">
-        <mat-label>Stockwerk</mat-label>
-        <input matInput formControlName="stockwerk" placeholder="z.B. 1. OG">
-        <mat-error *ngIf="mieterForm.get('stockwerk')?.hasError('required')">
-          Pflichtfeld.
+<form [formGroup]="mieterForm" (ngSubmit)="speichern()">
+  <mat-dialog-content class="dialog-content-fix">
+    <div style="padding-top: 15px; display: flex; flex-direction: column; gap: 5px;">
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Wohnungsnummer (z.B. WE 01)</mat-label>
+        <input matInput formControlName="wohnungsNummer">
+        <mat-error *ngIf="mieterForm.get('wohnungsNummer')?.hasError('required')">
+          Nummer erforderlich.
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" style="flex: 1;">
-        <mat-label>Zimmer</mat-label>
-        <input matInput type="number" formControlName="zimmer">
-        <mat-error *ngIf="mieterForm.get('zimmer')?.hasError('min')">
-          Mind. 1 Zimmer.
+      <mat-form-field appearance="outline">
+        <mat-label>Name / Firma</mat-label>
+        <input matInput formControlName="name" placeholder="z.B. Janjic GmbH">
+        <mat-error *ngIf="mieterForm.get('name')?.hasError('required')">
+          Der Name ist <strong>erforderlich</strong>.
         </mat-error>
       </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Steuer-ID / USt-IdNr. (optional für Geschäfte)</mat-label>
+        <input matInput formControlName="steuerId" placeholder="DE123456789">
+      </mat-form-field>
+
+      <div style="display: flex; gap: 10px;">
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Fläche (m²)</mat-label>
+          <input matInput type="number" formControlName="flaeche" step="0.01" placeholder="z.B. 75.5">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Stockwerk / Lage</mat-label>
+          <input matInput formControlName="stockwerk" placeholder="z.B. EG rechts">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Zimmer / Lage</mat-label>
+          <input matInput formControlName="zimmer" placeholder="z.B. 3 oder EG">
+          <mat-error *ngIf="mieterForm.get('zimmer')?.hasError('required')">
+            Pflichtfeld.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Kaltmiete (€)</mat-label>
+          <input matInput type="number" formControlName="kaltmiete" step="0.01">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Nebenkosten (€)</mat-label>
+          <input matInput type="number" formControlName="nebenkosten" step="0.01">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>MwSt. (€)</mat-label>
+          <input matInput type="number" formControlName="mwst" step="0.01" placeholder="z.B. 19%">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Gesamtmiete (€) - Berechnet (Inkl. MwSt.)</mat-label>
+        <input matInput type="number" formControlName="gesamtmiete">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Kaution (€)</mat-label>
+        <input matInput type="number" formControlName="kaution" step="0.01">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Sonstige (z.B. Garage, Keller)</mat-label>
+        <input matInput formControlName="sonstige" placeholder="Garage Nr. 5">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mietbeginn</mat-label>
+        <input matInput type="date" formControlName="mietbeginn">
+      </mat-form-field>
+      
     </div>
+  </mat-dialog-content>
 
-    <div style="display: flex; gap: 10px;">
-      <mat-form-field appearance="outline" style="flex: 1;">
-        <mat-label>Kaltmiete (€)</mat-label>
-        <input matInput type="number" formControlName="kaltmiete">
-        <mat-error *ngIf="mieterForm.get('kaltmiete')?.hasError('required')">
-          Betrag fehlt.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" style="flex: 1;">
-        <mat-label>Nebenkosten (€)</mat-label>
-        <input matInput type="number" formControlName="nebenkosten">
-      </mat-form-field>
-    </div>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Gesamtmiete (€) - Berechnet</mat-label>
-      <input matInput type="number" formControlName="gesamtmiete">
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Kaution (€)</mat-label>
-      <input matInput type="number" formControlName="kaution">
-      <mat-error *ngIf="mieterForm.get('kaution')?.hasError('required')">
-        Bitte Kaution angeben (auch 0 möglich).
-      </mat-error>
-    </mat-form-field>
-    
-  </div>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button (click)="dialogRef.close()">Abbrechen</button>
-  <button mat-raised-button color="primary" (click)="speichern()" [disabled]="!mieterForm.valid">
-    Hinzufügen
-  </button>
-</mat-dialog-actions>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="dialogRef.close()">Abbrechen</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!mieterForm.valid">
+      {{ data ? 'Speichern' : 'Hinzufügen' }}
+    </button>
+  </mat-dialog-actions>
+</form>
