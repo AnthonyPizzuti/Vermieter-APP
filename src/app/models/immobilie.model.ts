@@ -12,6 +12,7 @@ export interface Mieter {
   kaution: number;
   steuerId?: string;
   istBezahlt: { [key: string]: boolean };
+  bezahlteBetraege?: { [key: string]: number };
   sonstige?: string;
   mietbeginn?: string;
 }

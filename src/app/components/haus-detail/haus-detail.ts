@@ -50,9 +50,7 @@ export class HausDetail implements OnInit {
     'nebenkosten',
     'mwst', 
     'gesamtmiete', 
-    'kaution',
-    'sonstige',
-    'mietbeginn',
+    'bezahlterBetrag', // Neue Spalte integriert
     'bezahlt', 
     'aktionen'
   ];
@@ -118,7 +116,8 @@ export class HausDetail implements OnInit {
         const neuerMieter: Mieter = {
           ...result,
           id: neueId,
-          istBezahlt: {}
+          istBezahlt: {},
+          bezahlteBetraege: {} // Initialisierung des neuen Feldes
         };
 
         this.haus.mieter.push(neuerMieter);
@@ -127,9 +126,31 @@ export class HausDetail implements OnInit {
     });
   }
 
+  // Korrigierte Methode für den Betrag (behebt TS2322)
+  updateBetrag(mieter: Mieter, event: any) {
+    const wert = event.target.value;
+    const zahl = parseFloat(wert.replace(',', '.')); // Erlaubt Komma-Eingabe
+    
+    if (!mieter.bezahlteBetraege) {
+      mieter.bezahlteBetraege = {};
+    }
+    
+    // Wir speichern es als Zahl, falls gültig, sonst als 0
+    mieter.bezahlteBetraege[this.aktuellerMonat] = !isNaN(zahl) ? zahl : 0;
+    this.saveChanges();
+  }
+
   toggleBezahlt(mieter: Mieter) {
     if (!mieter.istBezahlt) mieter.istBezahlt = {};
-    mieter.istBezahlt[this.aktuellerMonat] = !mieter.istBezahlt[this.aktuellerMonat];
+    const neuerStatus = !mieter.istBezahlt[this.aktuellerMonat];
+    mieter.istBezahlt[this.aktuellerMonat] = neuerStatus;
+    
+    // Komfort-Funktion: Betrag automatisch füllen, wenn Häkchen gesetzt wird
+    if (neuerStatus) {
+       if (!mieter.bezahlteBetraege) mieter.bezahlteBetraege = {};
+       mieter.bezahlteBetraege[this.aktuellerMonat] = mieter.gesamtmiete;
+    }
+    
     this.saveChanges();
   }
 
@@ -156,8 +177,6 @@ export class HausDetail implements OnInit {
             }
           }
         });
-      } else {
-        console.log('Bearbeiten abgebrochen: Passwort falsch oder Dialog geschlossen.');
       }
     });
   }

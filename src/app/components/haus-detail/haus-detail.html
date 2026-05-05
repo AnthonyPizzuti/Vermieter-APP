@@ -116,6 +116,19 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="bezahlterBetrag">
+  <th mat-header-cell *matHeaderCellDef> Gezahlt (€) </th>
+  <td mat-cell *matCellDef="let m">
+    <mat-form-field appearance="outline" class="compact-input">
+      <input matInput 
+             type="text" 
+             placeholder="Betrag..."
+             [value]="m.bezahlteBetraege?.[aktuellerMonat] || ''"
+             (change)="updateBetrag(m, $event)">
+    </mat-form-field>
+  </td>
+</ng-container>
+
           <ng-container matColumnDef="bezahlt">
             <th mat-header-cell *matHeaderCellDef> 
               <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 5px 0;">
@@ -142,18 +155,22 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="aktionen">
-            <th mat-header-cell *matHeaderCellDef> Aktionen </th>
-            <td mat-cell *matCellDef="let m">
-              <button mat-icon-button color="primary" (click)="editMieter(m)" matTooltip="Bearbeiten">
-                <mat-icon>edit</mat-icon>
-              </button>
-              
-              <button mat-icon-button color="warn" (click)="deleteMieter(m.id)" matTooltip="Löschen">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
+         <ng-container matColumnDef="aktionen">
+  <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+  <td mat-cell *matCellDef="let m">
+    <button mat-icon-button color="primary" (click)="editMieter(m)" matTooltip="Bearbeiten">
+      <mat-icon>edit</mat-icon>
+    </button>
+    
+    <!-- Klasse hinzugefügt für garantiertes Rot -->
+    <button mat-icon-button 
+            class="btn-delete-red" 
+            (click)="deleteMieter(m.id)" 
+            matTooltip="Löschen">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </td>
+</ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
